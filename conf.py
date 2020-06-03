@@ -46,7 +46,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'CSP'
+project = 'Contents Service Patterns'
 copyright = '2020, WineSOFT Inc.'
 
 # The version info for the project you're documenting, acts as replacement for
