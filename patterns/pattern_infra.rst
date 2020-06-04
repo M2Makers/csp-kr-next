@@ -75,8 +75,8 @@
 
 해결하고 싶은 문제
 ------------------------------------
-외부 콘텐츠를 완전히 스토리지로 백업하기 전까지 서비스가 불가능하다.
-배치 마이그레이션은 외부 콘텐츠의 변경을 반영하기 어려울 뿐만 아니라 언제 종료될지 확신할 수 없다.
+마이그레이션이 시작되면 제발 장애없이 종료되길 기도하는 것 외엔 할 수 있는 것이 없다.
+물론 종료되기 전까지 서비스는 불가능하다.
 
 
 솔루션/패턴 설명
@@ -88,9 +88,9 @@
 
 외부로부터의 다운로드 스트림은 3가지 파이프로 확장된다.
 
--  클라이언트 서비스
+-  대기 중인 클라이언트에세 응답
 -  스토리지 백업
--  ``M2`` 콘텐츠 캐싱
+-  캐싱
 
 
 구현
@@ -100,7 +100,7 @@
       # vhosts.xml - <Vhosts><Vhost><M2><Endpoints><Endpoint>
 
       <Control>
-         <Module Name="aws_s3-backup">bucket:mybucket; object:/my/desired/key.txt;</Module>
+         <Module Name="aws_s3-backup">aws_access_key=...;aws_secret_key =...;bucket=...;s3_url=...;region=...;</Module>
       </Control>
 
 
