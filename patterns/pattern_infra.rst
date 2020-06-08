@@ -128,47 +128,74 @@
 
 해결하고 싶은 문제
 ------------------------------------
-모든 콘텐츠 요청이 스토리지로 집중됨에 따라 스토리지의 성능이 저하되며 SPOP(Single Point Of Pain)가 되어 간다.
+모든 콘텐츠 요청이 스토리지에 집중됨에 따라 스토리지의 성능이 저하된다.
+더 큰 스토리지는 근본적인 해답이 못 된다.
+가용성, 성능, 경제성을 동시에 보장할 수 있는 솔루션이 필요하다.
 
 
 솔루션/패턴 설명
 ------------------------------------
-구성은 `콘텐츠 체인`_ 과 유사하지만 ``M2`` 의 `확장모듈 <https://m2-kr.readthedocs.io/ko/latest/guide/endpoint.html#endpoint-control-module>`_ 을 이용해 구현한다.
+캐시를 2계층으로 구성한다.
 
-.. figure:: img/dgm009.png
+.. figure:: img/dgm010.png
    :align: center
 
-외부로부터의 다운로드 스트림은 3가지 파이프로 확장된다.
-
--  대기 중인 클라이언트에세 응답
--  스토리지 백업
--  캐싱엔진 저장
+=================== ======================================= =================================
+구분                 Parent Layer                             Child Layer
+=================== ======================================= =================================
+캐싱대상             COLD 콘텐츠                              HOT 콘텐츠
+역할                 콘텐츠 분산저장, 스토리지 부하 절감                    콘텐츠 분산
+증설시점             원본 콘텐츠 증가시점                      트래픽 증가시점
+=================== ======================================= =================================
 
 
 구현
 ------------------------------------
-기본 구성은 `콘텐츠 체인`_ 과 동일하며 백업을 위해 ``M2`` `확장모듈 <https://m2-kr.readthedocs.io/ko/latest/guide/endpoint.html#endpoint-control-module>`_ 을 설정한다.  ::
+``Child`` , ``Parent`` 는 개념적인 분류일 뿐 특별한 설정을 요구하는 것은 아니다.
+
+-  ``Parent Layer`` 는 단순하게 원본서버로부터 캐싱한다. ::
    
-      # vhosts.xml - <Vhosts><Vhost><M2><Endpoints><Endpoint>
+      # vhosts.xml - <Vhosts>
 
-      <Control>
-         <Module Name="aws_s3-backup">aws_access_key=...;aws_secret_key =...;bucket=...;s3_url=...;region=...;</Module>
-      </Control>
+      <Vhost Name="parent-1.example.com">
+         <Origin>
+            <Address>storage.example.com</Address>
+         </Origin>
+         <Options>
+            <IfRange Purge="ON">ON</IfRange>
+         </Options>
+      </Vhost>
 
+-  ``Child Layer`` 에서는 ``Parent Layer`` 의 주소로 콘텐츠를 분산하도록 설정한다. ::
+
+      # vhosts.xml - <Vhosts>
+
+      <Vhost Name="www.example.com">
+         <Origin>
+            <Address>parent-1.example.com</Address>
+            <Address>parent-2.example.com</Address>
+            <Address>parent-3.example.com</Address>
+            <Address>parent-4.example.com</Address>
+         </Origin>
+         <OriginOptions>
+            <BalanceMode>Hash</BalanceMode>
+         </OriginOptions>
+      </Vhost>
 
 
 장점/효과
 ------------------------------------
--  마이그레이션/백업 과정없이 즉시 서비스가 가능하다.
--  사용자가 요청하는 순서대로 콘텐츠가 백업된다.
+-  스토리지 장애가 발생하여도 캐싱된 콘텐츠는 중단없이 서비스가 가능하다.
+-  콘텐츠 용량/개수가 급증하여도 캐시를 Scale-out하여 손쉽게 대응할 수 있다.
+-  별도의 관리 시스템이 불필요하다.
 
 
 주의점
 ------------------------------------
-사용자가 요청하지 않는 콘텐츠는 백업되지 않을 수 있으므로 스토리지에 없는 콘텐츠를 ``bar.com`` 으로 요청하는 보조 프로세스가 필요할 수 있다.
+``STON`` 으로 구현한다면 `블럭캐싱과 데이터 무결성 <https://ston.readthedocs.io/ko/latest/admin/enterprise.html#enterprise-block>`_ 를 참고한다.
 
 
 기타
 ------------------------------------
-``STON`` `2-Tier 구조 매뉴얼 <https://ston.readthedocs.io/ko/latest/admin/enterprise.html>`_
+더 자세한 내용과 무결성에 대한 내용은 ``STON`` - `2-Tier 구조 매뉴얼 <https://ston.readthedocs.io/ko/latest/admin/enterprise.html>`_  을 참고한다.
 
