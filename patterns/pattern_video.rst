@@ -63,132 +63,55 @@ iOS를 기준으로 시장표준 동영상 전송방식은 HLS(Http Live Streami
 
 
 
-백업 파이프
+실시간 구간편집
 ====================================
 
 해결하고 싶은 문제
 ------------------------------------
-마이그레이션이 시작되면 제발 장애없이 종료되길 기도하는 것 외엔 할 수 있는 것이 없다.
-물론 종료되기 전까지 서비스는 불가능하다.
+고객은 영상 전체보다 이슈 장면만 선별적으로 소비한다.
+복잡한 사전작업 없이 이슈 즉시 편집된 영상을 제공하고 싶다.
 
 
 솔루션/패턴 설명
 ------------------------------------
-구성은 `콘텐츠 체인`_ 과 유사하지만 ``M2`` 의 `확장모듈 <https://m2-kr.readthedocs.io/ko/latest/guide/endpoint.html#endpoint-control-module>`_ 을 이용해 구현한다.
+``STON`` 의 `Multi-Trimming <https://ston.readthedocs.io/ko/latest/admin/video.html#multi-trimming>`_ 기능을 이용해 실시간으로 MP4영상을 편집한다.
 
-.. figure:: img/dgm009.png
+.. figure:: img/dgm012.png
    :align: center
-
-외부로부터의 다운로드 스트림은 3가지 파이프로 확장된다.
-
--  대기 중인 클라이언트에세 응답
--  스토리지 백업
--  캐싱엔진 저장
 
 
 구현
 ------------------------------------
-기본 구성은 `콘텐츠 체인`_ 과 동일하며 백업을 위해 ``M2`` `확장모듈 <https://m2-kr.readthedocs.io/ko/latest/guide/endpoint.html#endpoint-control-module>`_ 을 설정한다.  ::
+-  동영상 스토리지/서비스 앞에 ``STON`` 을 배치한다.
+-  ``STON`` MP4Trimming 기능을 활성화한다. ::
    
-      # vhosts.xml - <Vhosts><Vhost><M2><Endpoints><Endpoint>
+      # server.xml - <Server><VHostDefault><Media>
+      # vhosts.xml - <Vhosts><Vhost><Media>
 
-      <Control>
-         <Module Name="aws_s3-backup">aws_access_key=...;aws_secret_key =...;bucket=...;s3_url=...;region=...;</Module>
-      </Control>
+      <MP4Trimming MultiParam="trimming" MaxRatio="50">ON</MP4Trimming>
+      <M4ATrimming MultiParam="trimming">ON</M4ATrimming>
 
+
+-  플레이어에서 기존 동영상 주소 뒤에 원하는 구간을 초단위로 명시한다. ::
+
+      http://example.com/video.mp4?trimming=10-70
 
 
 장점/효과
 ------------------------------------
--  마이그레이션/백업 과정없이 즉시 서비스가 가능하다.
--  사용자가 요청하는 순서대로 콘텐츠가 백업된다.
+별도의 백엔드 프로세스나 추가 저장공간의 소비 없이 즉시 편집된 동영상 서비스가 가능하다.
 
 
 주의점
 ------------------------------------
-사용자가 요청하지 않는 콘텐츠는 백업되지 않을 수 있으므로 스토리지에 없는 콘텐츠를 ``bar.com`` 으로 요청하는 보조 프로세스가 필요할 수 있다.
+`ngx_http_mp4_module <http://nginx.org/en/docs/http/ngx_http_mp4_module.html>`_ 이나 `Mod-H264-Streaming-Testing-Version2 <http://h264.code-shop.com/trac/wiki/Mod-H264-Streaming-Testing-Version2>`_ 같은 사용방식을 원한다면 ``STON`` - `Trimming <https://ston.readthedocs.io/ko/latest/admin/video.html#trimming>`_ 을 사용한다.
 
 
 기타
 ------------------------------------
--  우선적으로 스토리지로 업로드하고 싶은 콘텐츠가 있다면 ``bar.com`` 을 호출하는 프로세스를 추가한다.
--  규칙만 정해져 있다면 동적으로 외부 서비스를 연결할 수 있다.
+`실시간 HLS 전송`_ 과 같이 사용할 수 있다. ::
+
+   http://example.com/video.mp4?trimming=17-20,30-40/mp4hls/index.m3u8
 
 
-
-2-Tier 구조
-====================================
-
-해결하고 싶은 문제
-------------------------------------
-모든 콘텐츠 요청이 스토리지에 집중됨에 따라 스토리지의 성능이 저하된다.
-더 큰 스토리지는 근본적인 해답이 못 된다.
-가용성, 성능, 경제성을 동시에 보장할 수 있는 솔루션이 필요하다.
-
-
-솔루션/패턴 설명
-------------------------------------
-캐시를 2계층으로 구성한다.
-
-.. figure:: img/dgm010.png
-   :align: center
-
-=================== ======================================= =================================
-구분                 Parent Layer                             Child Layer
-=================== ======================================= =================================
-캐싱대상             COLD 콘텐츠                              HOT 콘텐츠
-역할                 콘텐츠 분산저장, 스토리지 부하 절감                    콘텐츠 분산
-증설시점             원본 콘텐츠 증가시점                      트래픽 증가시점
-=================== ======================================= =================================
-
-
-구현
-------------------------------------
-``Child`` , ``Parent`` 는 개념적인 분류일 뿐 특별한 설정을 요구하는 것은 아니다.
-
--  ``Parent Layer`` 는 단순하게 원본서버로부터 캐싱한다. ::
-   
-      # vhosts.xml - <Vhosts>
-
-      <Vhost Name="parent-1.example.com">
-         <Origin>
-            <Address>storage.example.com</Address>
-         </Origin>
-         <Options>
-            <IfRange Purge="ON">ON</IfRange>
-         </Options>
-      </Vhost>
-
--  ``Child Layer`` 에서는 ``Parent Layer`` 의 주소로 콘텐츠를 분산하도록 설정한다. ::
-
-      # vhosts.xml - <Vhosts>
-
-      <Vhost Name="www.example.com">
-         <Origin>
-            <Address>parent-1.example.com</Address>
-            <Address>parent-2.example.com</Address>
-            <Address>parent-3.example.com</Address>
-            <Address>parent-4.example.com</Address>
-         </Origin>
-         <OriginOptions>
-            <BalanceMode>Hash</BalanceMode>
-         </OriginOptions>
-      </Vhost>
-
-
-장점/효과
-------------------------------------
--  스토리지 장애가 발생하여도 캐싱된 콘텐츠는 중단없이 서비스가 가능하다.
--  콘텐츠 용량/개수가 급증하여도 캐시를 Scale-out하여 손쉽게 대응할 수 있다.
--  별도의 관리 시스템이 불필요하다.
-
-
-주의점
-------------------------------------
-``STON`` 으로 구현한다면 `블럭캐싱과 데이터 무결성 <https://ston.readthedocs.io/ko/latest/admin/enterprise.html#enterprise-block>`_ 를 참고한다.
-
-
-기타
-------------------------------------
-변경주기가 분단위 이상이고 읽기빈도가 높다면 데이터베이스에도 도입이 가능하다.
 
