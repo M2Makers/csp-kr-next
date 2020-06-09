@@ -4,7 +4,7 @@
 ******************
 
 이 장에서는 동영상을 빠르고 호환성있게 전달하는 패턴에 대해 설명한다.
-동영상 서비스에서는 :ref:`pattern-infra-2tier` 구조가 기본이 될 만큼 엄청난 저장공간과 전송대역폭을 필요로 한다.
+동영상 서비스에서는 :ref:`pattern-infra-2tier` 가 기본이 될 만큼 엄청난 저장공간과 전송대역폭을 필요로 한다.
 막대한 비용이 지출되는 만큼 어떻게 안정적이고 경제적인 서비스를 구성할 것인가에 초점을 맞추어야 한다.
 
 
@@ -14,8 +14,8 @@
 
 해결하고 싶은 문제
 ------------------------------------
-iOS를 기준으로 시장표준 동영상 전송방식은 HLS(Http Live Streaming)이다.
-이미 스토리지에 MP4포맷으로 저장된 수 많은 영상을 MPEG-TS로 분할하기에는 시간과 공간의 제약이 크다.
+아이폰을 기준으로 시장표준 동영상 전송방식은 HLS(Http Live Streaming)이다.
+이미 스토리지에 MP4포맷으로 저장된 수 많은 영상을 HLS의 미디어 포맷인 MPEG2-TS로 분할(Segmentation)하기에는 시간과 공간의 제약이 크다.
 
 
 솔루션/패턴 설명
@@ -40,7 +40,7 @@ iOS를 기준으로 시장표준 동영상 전송방식은 HLS(Http Live Streami
          <AlternatesName>playlist.m3u8</AlternatesName>
       </MP4HLS>
 
--  플레이어에서 기존 동영상 주소 뒤에 ``~/mp4hls/index.m3u8`` 를 붙여 호출한다. ::
+-  플레이어에서 기존 동영상 URL 뒤에 ``/mp4hls/index.m3u8`` 를 붙여 호출한다. ::
 
       http://www.example.com/video.mp4/mp4hls/index.m3u8
 
@@ -53,8 +53,7 @@ iOS를 기준으로 시장표준 동영상 전송방식은 HLS(Http Live Streami
 
 주의점
 ------------------------------------
-``STON`` 은 MP4에 대한 트랜스코딩(transcoding)을 수행하지 않는다. 
-따라서 원본 동영상의 Video/Audio를 다른 Bitrate로 재가공할 수 없다.
+포맷변경/분할(Segmentation)과 트랜스코딩(transcoding)을 혼동하지 말자.
 
 
 기타
@@ -83,7 +82,7 @@ iOS를 기준으로 시장표준 동영상 전송방식은 HLS(Http Live Streami
 구현
 ------------------------------------
 -  동영상 스토리지/서비스 앞에 ``STON`` 을 배치한다.
--  ``STON`` MP4Trimming 기능을 활성화한다. ::
+-  ``STON`` `Multi-Trimming <https://ston.readthedocs.io/ko/latest/admin/video.html#multi-trimming>`_ 기능을 활성화한다. ::
    
       # server.xml - <Server><VHostDefault><Media>
       # vhosts.xml - <Vhosts><Vhost><Media>
