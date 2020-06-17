@@ -44,7 +44,7 @@
          <Key Hash="none">$Token</Token>
       </Drm>
 
--  DRM 주소를 배포한다. 또는 모든 콘텐츠 주소뒤에 ``/drm`` 이 붙도록 `URL 전처리 <https://ston.readthedocs.io/ko/latest/admin/adv_vhost.html#url>`_ 를 설정한다.::
+-  DRM 주소를 배포한다. 또는 모든 콘텐츠 주소뒤에 ``/drm`` 이 붙도록 `URL 전처리 <https://ston.readthedocs.io/ko/latest/admin/adv_vhost.html#url>`_ 를 설정한다. ::
 
       www.example.com/music.mp3/drm
 
