@@ -32,7 +32,7 @@
 구현
 ------------------------------------
 -  스토리지 앞에 ``STON`` 를 배치한다. (=HTTP 통신이 가능하다.)
--  ``STON`` On the fly DRM 기능을 확설화한다. ::
+-  ``STON`` On the fly DRM 기능을 활성화한다. ::
    
       $ server.xml - <Server><VHostDefault><Options>
       $ vhosts.xml - <Vhosts><Vhost><Options>
