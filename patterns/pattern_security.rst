@@ -3,7 +3,9 @@
 보안 패턴
 ******************
 
-이 장에서는 콘텐츠 전송보안에 대해 설명한다.
+이 장에서는 콘텐츠를 보호하는 패턴에 대해 설명한다.
+보안(Security)의 범주는 매우 크기 때문에 다소 과하게 다루어지는 면이 있다.
+용도와 목적에 알맞은 해법은 콘텐츠의 안정성과 비용을 합리적으로 다룰 수 있도록 해준다.
 
 
 실시간 DRM
@@ -11,167 +13,108 @@
 
 해결하고 싶은 문제
 ------------------------------------
-오픈마켓에서는 판매자가 상품기술서를 ``<HTML>`` 로 업로드한다.
-반응형(Responsive)을 고려하지 않고 작성된 ``<HTML>`` 은 레이아웃과 사용자 경험을 망친다.
-흔히들 사용하는 배치작업을 통한 마이그레이션에는 치명적인 문제가 있다.
-
--  기획이 변경되면 다시 마이그레이션해야 한다.
--  외부에서 참조되는 리소스는 통제가 불가능하다.
+콘텐츠 보호를 위해 DRM(Digital Right Management)을 고려해 보았지만 비용과 운영관점에서 지나치게 무겁다.
+운영이 쉽고 가볍게 도입할 수 있는 End To End 콘텐츠 암/복호화 시스템을 구축하고 싶다.
 
 
 솔루션/패턴 설명
 ------------------------------------
-전송시점에 상품기술서 ``<HTML>`` 를 반응형(Responsive)으로 수정한다.
+콘텐츠 전송시점에 암호화를 수행하고 콘텐츠 재생시점에 복호화를 수행한다.
 
-.. figure:: img/dgm006.png
+.. figure:: img/dgm015.png
    :align: center
 
-부모 페이지의 ``CSS`` / ``JavaScript`` 등과 충돌되지 않도록 ``<iframe>`` 으로 삽입한다.
-
-.. note::
-
-   ``<iframe>`` 에 대한 막연한 우려에 대해 접하곤 한다.
-   하지만 ``<iframe>`` 은 명백히 ``HTML5`` 표준이다. 
-   유튜브, 챗봇, 리뷰, 추천등 SaaS(Software As A Service) 연동이 ``<iframe>`` 기반으로 서비스되고 있음을 상기하자.
+암호화 키는 주고받지 않으며 양 주체가 약속된 알고리즘에 의해 키를 생성한다.
+키의 시드(seed) 중 하나로 URL을 사용하여 모든 콘텐츠의 키를 다르게 사용한다.
 
 
 
 구현
 ------------------------------------
--  상품기술서 스토리지 앞이나 외부 기술서 참조가 가능한 지점에 ``M2`` 를 배치한다. (=HTTP 통신이 가능하다.)
--  ``M2`` 상품기술서 엔드포인트를 생성한다. ::
+-  스토리지 앞에 ``STON`` 를 배치한다. (=HTTP 통신이 가능하다.)
+-  ``STON`` On the fly DRM 기능을 확설화한다. ::
    
-      # vhosts.xml - <Vhosts><Vhost><M2><Endpoints><Endpoint>
+      $ server.xml - <Server><VHostDefault><Options>
+      $ vhosts.xml - <Vhosts><Vhost><Options>
 
-      <Model>
-         <Source>https://foo.com/#model</Source>
-      </Model>
-      <View>
-         <Source>https://bar.com/#view</Source>
-      </View>
-      <Control>
-         <Path>/item-detail</Path>
-      </Control>
+      <Drm Status="Aactive" Keyword="drm" MaxSourceSize="500">
+         <Algorithm>RC4</Algorithm>
+         <IV> ... </IV>
+         <Token> ... </Token>
+         <Key Hash="none">$Token</Token>
+      </Drm>
 
+-  DRM 주소를 배포한다. 또는 모든 콘텐츠 주소뒤에 ``/drm`` 이 붙도록 `URL 전처리 <https://ston.readthedocs.io/ko/latest/admin/adv_vhost.html#url>`_ 를 설정한ㄷ.::
 
--  ``M2`` View파일에 상품기술서에 적용할 ``CSS`` 와 필터를 적용한다. 
--  프론트엔드에서 반응형 상품기술서를 AJAX로 삽입한다. ::
-
-      https://www.exmaple.com/item-detail?model=ITEM001&view=responsive
+      www.example.com/music.mp3/drm
 
 
 장점/효과
 ------------------------------------
--  상품기술서를 일일이 수정하지 않고 페이지 레이아웃/UX를 개선할 수 있다.
--  프론트엔드 스타일 충돌없이 도입이 가능하다.
--  지속적으로 상품기술서 정책을 보강할 수 있다.
+-  콘텐츠가 유출되어도 복호화할 수 없어 안전하다.
+-  백엔드와 DRM 솔루션을 타이트하게 결합하지 않아도 같은 효과를 얻을 수 있다.
+-  모든 콘텐츠가 다른 키를 사용하며 언제든지 변경이 가능하다.
 
 
 주의점
 ------------------------------------
-기존 상품기술서를 삽입하는 방식과 스타일 충돌여부를 미리 살펴야 한다.
+암호화 레벨설계시 타겟 모바일 디바이스의 복호화 성능을 고려해야 한다.
 
 
 기타
 ------------------------------------
-마이그레이션 과정 중 깨진 상품기술서에 대한 보정도 가능하다.
-
-.. figure:: img/rsc003.png
-   :align: center
+대칭키/비대칭키 모두 사용이 가능하다.
 
 
 
 
-인증
+요청 인증
 ====================================
 
 해결하고 싶은 문제
 ------------------------------------
-``HTTPS`` 웹페이지에서 (외부에서 제공되는) ``HTTP`` 리소스를 참조할 경우 콘텐츠가 차단된다.
-
-.. figure:: img/rsc001.png
-   :align: center
-
-.. figure:: img/rsc002.png
-   :align: center
-
--  `혼합 콘텐츠란? - Google <https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content?hl=ko>`_
--  `What is mixed content? - Clourflare <https://www.cloudflare.com/learning/ssl/what-is-mixed-content/>`_
+클라이언트 HTTP 요청을 분석하여 올바른 접근에 대해서만 콘텐츠를 서비스하고 싶다.
 
 
 솔루션/패턴 설명
 ------------------------------------
-``<HTML>`` 내에 존재하는 혼합 콘텐츠 문제를 클라이언트에게 전송하기 전 필터링한다. 
+인증 복호화 스펙을 커스터마이징 모듈로 구현한다.
 
-.. figure:: img/dgm005.png
+.. figure:: img/dgm016.png
    :align: center
 
-외부 리소스는 ``M2`` 를 통해 단일 ``HTTPS`` 도메인으로 제공된다. 
-3rd Party에 의해 혼합 콘텐츠가 포함된 ``<iframe>`` 이 제공되더라도 일관되게 필터링된다.
+인증은 크게 인라인모듈과 인증서버로 구분된다.
+
+-  ``내부 인증모듈`` - 알고리즘/스펙에 의해 요청의 유효성을 즉시 판단한다.
+-  ``외부 인증모듈`` - 요청 전체 또는 일부 토큰을 인증서버로 보내 유효성 여부에 대해 판단 받는다.
 
 
 구현
 ------------------------------------
 -  스토리지 앞에 ``M2`` 를 배치한다. (=HTTP 통신이 가능하다.)
--  ``M2`` 혼합 콘텐츠를 필터링할 엔드포인트를 ``www.example.com`` 에 생성한다. ::
+-  ``M2`` `확장모듈 <https://m2-kr.readthedocs.io/ko/latest/guide/endpoint.html#endpoint-control-module>`_ 을 이용해 인증로직을 구현한다. ::
    
       # vhosts.xml - <Vhosts><Vhost><M2><Endpoints><Endpoint>
 
-      <Model>
-         <Source>https://foo.com/#model</Source>
-      </Model>
-      <View>
-         <Source>https://bar.com/#view</Source>
-      </View>
       <Control>
-         <Path>/item-detail</Path>
+         <Module Name="myAuth">key=abcdef;token=keytoken;validity=1h</Module>
       </Control>
 
-
--  ``M2`` View파일에 nunjucks 필터를 적용한다. ::
-   
-      {{ model.__raw | toHttps('/item-detail/mixed') }}
-
-
--  ``M2/STON`` 혼합 콘텐츠 게이트웨이용 가상호스트를 생성하고 ``ByClient`` 기능을 활성화한다. ::
-   
-      # vhosts.xml - <Vhosts>
-
-       <Vhost Name="mixed.example.com">
-          <Origin ByClient="ON" ByClientKeyword="byclient" Protocol="HTTP"/>
-       </Vhost>
-
-
--  ``M2/STON`` 혼합 콘텐츠 리소스는 ``www.example.com/item-detail/mixed/..`` 로 제공된다.
-   해당 URL이 ``mixed.example.com`` 에서 처리될 수 있도록 URL 전처리를 규칙을 추가한다. ::
-
-      <URLRewrite AccessLog="Replace">
-         <Pattern><![CDATA[www.example.com/item-detail/mixed/(.*)]]></Pattern>
-         <Replace><![CDATA[mixed.example/byclient/#1]]></Replace>
-      </URLRewrite>
-
-
--  혼합 콘텐츠가 포함된 URL을 ``M2`` URL로 변경한다. ::
-
-      https://www.exmaple.com/item-detail?model=ITEM001&view=...
+-  배포서버에서 암호화된 URL을 배포한다.
 
 
 장점/효과
 ------------------------------------
--  마이그레이션 없이 즉시 웹 사이트에 ``HTTPS`` 를 적용한다.
--  통제할 수 없는 외부 리소스에도 일관되게 ``HTTPS`` 를 적용한다.
--  추후 보안수준이 강화되더라도 ``M2`` 를 통해 정책개선이 가능하다.
+-  인증과 로직, 콘텐츠를 분리하여 처리한다.
+-  기존 인증시스템을 그대로 사용한다.
 
 
 주의점
 ------------------------------------
-현재(2020.06) 이미지등 단순 참조 리소스는 차단되지 않기 때문에 해당 콘텐츠는 배제하는 것이 효율적이다.
-추후 보안검사 수준이 상향되는 경우 이미지에 대해서도 이 패턴의 사용이 가능하다. 
-이 경우 발생하게되는 데이터 트래픽 처리비용에 대해 고려해야 한다.
+인증서버가 SPOP(Single Point Of Pain)가 되지 않도록 가용량을 고려해서 설계한다.
+
 
 
 기타
 ------------------------------------
-SSL/TLS Offloading을 제공하는 CDN이 있다면 같이 활용할 수 있다.
-
-
+인증과 `Trimming <https://ston.readthedocs.io/ko/latest/admin/video.html#trimming>`_ 을 결합하면 미리듣기 서비스를 손쉽게 구현할 수 있다.
