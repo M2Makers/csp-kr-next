@@ -44,14 +44,14 @@
          <Key Hash="none">$Token</Token>
       </Drm>
 
--  DRM 주소를 배포한다. 또는 모든 콘텐츠 주소뒤에 ``/drm`` 이 붙도록 `URL 전처리 <https://ston.readthedocs.io/ko/latest/admin/adv_vhost.html#url>`_ 를 설정한ㄷ.::
+-  DRM 주소를 배포한다. 또는 모든 콘텐츠 주소뒤에 ``/drm`` 이 붙도록 `URL 전처리 <https://ston.readthedocs.io/ko/latest/admin/adv_vhost.html#url>`_ 를 설정한다.::
 
       www.example.com/music.mp3/drm
 
 
 장점/효과
 ------------------------------------
--  콘텐츠가 유출되어도 복호화할 수 없어 안전하다.
+-  콘텐츠를 암호화하여 근본적으로 안전하다.
 -  백엔드와 DRM 솔루션을 타이트하게 결합하지 않아도 같은 효과를 얻을 수 있다.
 -  모든 콘텐츠가 다른 키를 사용하며 언제든지 변경이 가능하다.
 
@@ -63,7 +63,8 @@
 
 기타
 ------------------------------------
-대칭키/비대칭키 모두 사용이 가능하다.
+-  대칭키/비대칭키 모두 사용이 가능하다. 
+-  성능을 고려하여 콘텐츠가 전체가 아닌 일부 영역만 선택적으로 암호화할 수 있다.
 
 
 
@@ -78,7 +79,7 @@
 
 솔루션/패턴 설명
 ------------------------------------
-인증 복호화 스펙을 커스터마이징 모듈로 구현한다.
+서비스 최전방에서 인증을 구현한다.
 
 .. figure:: img/dgm016.png
    :align: center
@@ -88,19 +89,13 @@
 -  ``내부 인증모듈`` - 알고리즘/스펙에 의해 요청의 유효성을 즉시 판단한다.
 -  ``외부 인증모듈`` - 요청 전체 또는 일부 토큰을 인증서버로 보내 유효성 여부에 대해 판단 받는다.
 
+인증이 성공했다면 정상적인 서비스 플로우로 진행도니다.
+
 
 구현
 ------------------------------------
 -  스토리지 앞에 ``M2`` 를 배치한다. (=HTTP 통신이 가능하다.)
 -  ``M2`` `확장모듈 <https://m2-kr.readthedocs.io/ko/latest/guide/endpoint.html#endpoint-control-module>`_ 을 이용해 인증로직을 구현한다. ::
-   
-      # vhosts.xml - <Vhosts><Vhost><M2><Endpoints><Endpoint>
-
-      <Control>
-         <Module Name="myAuth">key=abcdef;token=keytoken;validity=1h</Module>
-      </Control>
-
--  배포서버에서 암호화된 URL을 배포한다.
 
 
 장점/효과
@@ -112,7 +107,6 @@
 주의점
 ------------------------------------
 인증서버가 SPOP(Single Point Of Pain)가 되지 않도록 가용량을 고려해서 설계한다.
-
 
 
 기타
