@@ -8,7 +8,7 @@
 복잡한 서비스 플로우 구성이나 프론트엔드 개발없이 구조적으로 문제를 해결해보자.
 
 
-반응형 상품기술서
+반응형 상품기술서 ``M2``
 ====================================
 
 해결하고 싶은 문제
@@ -84,7 +84,7 @@
 
 
 
-혼합 콘텐츠 (Mixed Contents)
+혼합 콘텐츠 (Mixed Contents) ``M2``
 ====================================
 
 해결하고 싶은 문제
@@ -177,3 +177,127 @@
 SSL/TLS Offloading을 제공하는 CDN이 있다면 같이 활용할 수 있다.
 
 
+
+
+웹페이지 to Web API ``M2``
+====================================
+
+해결하고 싶은 문제
+------------------------------------
+서비스 중인 웹페이지와 타 서비스를 연동해야 한다.
+Web API를 제공하고 싶지만 운영 중인 웹페이지를 수정하거나 별도의 API서비스를 구축하는 것이 부담스럽다.
+
+
+솔루션/패턴 설명
+------------------------------------
+``M2`` 를 이용해 ``<HTML>`` 웹 페이지를 ``JSON`` 으로 실시간 맵핑한다.
+
+.. figure:: img/dgm018.png
+   :align: center
+
+`Endpoint <https://m2-kr.readthedocs.io/ko/latest/guide/endpoint.html>`_ 를 이용해 RESTful하게 API를 제공한다.
+
+
+구현
+------------------------------------
+-  소스 웹페이지와 통신되는 영역에 ``M2`` 를 배치한다.
+-  ``M2`` 엔드포인트를 설정한다. 
+   모델로 게시된 웹페이지를 참조한다. ::
+   
+      # vhosts.xml - <Vhosts><Vhost><M2><Endpoints>
+
+      <Endpoint>
+         <Model>
+            <Source>http://www.example.com/product/#model.html</Source>
+            <Mapper>http://storage.com/assets/product_mapper.json</Mapper>
+         </Model>
+         <View ContentType="application/json">
+             <Source>http://storage.com/assets/o4o/#view.json</Source>
+         </View>
+         <Control>
+            <Path>/o4o/events/:model/:view</Path>
+         </Control>
+      </Endpoint>
+
+
+-  ``<HTML>`` 을 ``M2-JSON`` 으로 변환할 `Mapper <https://m2-kr.readthedocs.io/ko/latest/guide/model.html#mapper>`_ 를 작성한다. ::
+
+      {
+         "branch": "#container .total_box strong, textContent, trim",
+         "items": [{
+            "branch": ".product_list li.item span.branch, textContent, trim",
+            "dday": ".product_list li.item span.category, textContent, trim",
+            "title": ".product_list li.item .tit, textContent",
+            "location": ".product_list li.item p.floor, textContent",
+            "period": ".product_list li.item p.date, textContent",
+            "imageDataEcho": ".product_list li.item .img_thum img, attributes, data-echo, textContent",
+            "imageSrc": ".product_list li.item .img_thum img, attributes, src, textContent",
+            "entNo": ".product_list li.item a, attributes, value, textContent"
+    }]
+}
+
+-  ``JSON`` 형식의 `View <https://m2-kr.readthedocs.io/ko/latest/guide/view.html>`_ 를 작성한다. ::
+
+      {% if model.__url.includes('/events/') %}
+         {% set type = 'eventList' %}
+         {% set linkPrefix = 'https://www.example.com/event/eventDetail?entNo=' %}
+      {% elif model.__url.includes('/thankyou/') %}
+         {% set type = 'thankyouList' %}
+         {% set linkPrefix = 'https://www.example.com/thankyou/thankyouDetail?thkuNo=' %}
+      {% elif model.__url.includes('/shoppingnews/') %}
+         {% set type = 'shoppingNewsList' %}
+         {% set linkPrefix = 'https://www.example.com/shoppingNews/shoppingNewsDetail?shpgNewsNo=' %}
+      {% endif %}
+      {
+         "type" : "{{type}}",
+         "timeStamp" : "{{ 'new Date().toISOString()' | eval }}",
+         "branch" : "{{model.branch}}",
+         "items" : [
+         {% for item in model.items %}
+         {{ "," if loop.index0 > 0 else "" }}
+         {
+            "branch" : "{{item.branch}}",
+         {% if item.dday %}
+            "dday" : "{{item.dday}}",
+         {% endif %}
+            "title" : "{{item.title | replace("\n", "") | replace('"', '&quot;')}}",
+            "location" : "{{item.location | replace("\n", "") | replace('"', '&quot;')}}",
+            "period" : "{{item.period}}",
+         {% if item.imageDataEcho %}
+            "imageUrl" : "{{item.imageDataEcho}}",
+         {% else %}
+            "imageUrl" : "{{item.imageSrc}}",
+         {% endif %}
+            "linkUrl" : "{{linkPrefix}}{{item.entNo}}"
+         }
+         {% endfor %}
+         ]
+      }
+
+      
+-  API 를 노출한다. ::
+
+      https://api.exmaple.com/product/winesoft/type1
+
+
+장점/효과
+------------------------------------
+-  즉시 가용한 API 서비스를 제공한다.
+-  웹페이지가 수정되면 API에 즉시 반영된다.
+-  백엔드를 연동할 필요가 없다.
+
+
+주의점
+------------------------------------
+신규 API 서비스 구축비용의 경제성을 면밀히 따져야 한다.
+만약 ``<HTML>`` 을 처리하는 과정에 복잡한 컨텍스트나 비지니스 로직이나 필요하다면 구축이 더 나은 방법일 수 있다.
+
+
+기타
+------------------------------------
+소스 ``<HTML>`` 이 수정되는 경우 `Mapper <https://m2-kr.readthedocs.io/ko/latest/guide/model.html#mapper>`_ 를 수정할 수도 있지만 엔드포인트로 제공하는 Web API의 버전을 관리하는 것도 좋은 방법이다. ::
+
+   http://example.com/v1/product/info.json
+   http://example.com/v2/product/info.json
+   http://example.com/product/v1/info.json
+   http://example.com/product/v2/info.json
