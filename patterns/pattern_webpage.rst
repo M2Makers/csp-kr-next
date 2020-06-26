@@ -8,7 +8,7 @@
 복잡한 서비스 플로우 구성이나 프론트엔드 개발없이 구조적으로 문제를 해결해보자.
 
 
-반응형 상품기술서 ``M2``
+반응형 상품기술서
 ====================================
 
 해결하고 싶은 문제
@@ -84,7 +84,7 @@
 
 
 
-혼합 콘텐츠 (Mixed Contents) ``M2``
+혼합 콘텐츠 (Mixed Contents)
 ====================================
 
 해결하고 싶은 문제
@@ -179,7 +179,7 @@ SSL/TLS Offloading을 제공하는 CDN이 있다면 같이 활용할 수 있다.
 
 
 
-웹페이지 to Web API ``M2``
+웹페이지 to Web API
 ====================================
 
 해결하고 싶은 문제
@@ -234,22 +234,11 @@ Web API를 제공하고 싶지만 운영 중인 웹페이지를 수정하거나 
             "imageSrc": ".product_list li.item .img_thum img, attributes, src, textContent",
             "entNo": ".product_list li.item a, attributes, value, textContent"
     }]
-}
+
 
 -  ``JSON`` 형식의 `View <https://m2-kr.readthedocs.io/ko/latest/guide/view.html>`_ 를 작성한다. ::
 
-      {% if model.__url.includes('/events/') %}
-         {% set type = 'eventList' %}
-         {% set linkPrefix = 'https://www.example.com/event/eventDetail?entNo=' %}
-      {% elif model.__url.includes('/thankyou/') %}
-         {% set type = 'thankyouList' %}
-         {% set linkPrefix = 'https://www.example.com/thankyou/thankyouDetail?thkuNo=' %}
-      {% elif model.__url.includes('/shoppingnews/') %}
-         {% set type = 'shoppingNewsList' %}
-         {% set linkPrefix = 'https://www.example.com/shoppingNews/shoppingNewsDetail?shpgNewsNo=' %}
-      {% endif %}
       {
-         "type" : "{{type}}",
          "timeStamp" : "{{ 'new Date().toISOString()' | eval }}",
          "branch" : "{{model.branch}}",
          "items" : [
@@ -257,18 +246,10 @@ Web API를 제공하고 싶지만 운영 중인 웹페이지를 수정하거나 
          {{ "," if loop.index0 > 0 else "" }}
          {
             "branch" : "{{item.branch}}",
-         {% if item.dday %}
-            "dday" : "{{item.dday}}",
-         {% endif %}
             "title" : "{{item.title | replace("\n", "") | replace('"', '&quot;')}}",
             "location" : "{{item.location | replace("\n", "") | replace('"', '&quot;')}}",
             "period" : "{{item.period}}",
-         {% if item.imageDataEcho %}
             "imageUrl" : "{{item.imageDataEcho}}",
-         {% else %}
-            "imageUrl" : "{{item.imageSrc}}",
-         {% endif %}
-            "linkUrl" : "{{linkPrefix}}{{item.entNo}}"
          }
          {% endfor %}
          ]
