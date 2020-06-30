@@ -114,7 +114,7 @@
 
 
 
-On Demand Transcoding
+Progressive HLS Transcoding
 ====================================
 
 해결하고 싶은 문제
@@ -142,7 +142,7 @@ On Demand Transcoding
 
 솔루션/패턴 설명
 ------------------------------------
-``M2`` 를 이용해 동영상이 소비되는 영역만 분할하여 트랜스코딩/전송한다.
+``M2`` 를 이용해 HLS(Http Live Streaming)로 동영상이 소비되는 영역만 분할하여 트랜스코딩/전송한다.
 
 .. figure:: img/dgm019.png
    :align: center
