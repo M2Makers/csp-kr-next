@@ -21,3 +21,4 @@ Contents Service Patterns
    patterns/pattern_infra.rst
    patterns/pattern_performance.rst
    patterns/pattern_security.rst
+   patterns/appendix_decoupling.rst   
