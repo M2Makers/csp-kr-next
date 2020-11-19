@@ -8,8 +8,7 @@ Contents Service Patterns
 :저자: WineSOFT 아키텍트팀
 
 
-1부. 패턴
-=============================
+``M2`` 파이프라인 플랫폼을 이용해 구현한 서비스 패턴에 대해 설명한다.
 
 .. toctree::
    :maxdepth: 2
