@@ -150,7 +150,7 @@
       {{ model.__raw | toHttps('/item-detail/mixed') }}
 
 
--  ``M2/STON`` 혼합 콘텐츠 게이트웨이용 가상호스트를 생성하고 ``ByClient`` 기능을 활성화한다. ::
+-  ``M2`` 혼합 콘텐츠 게이트웨이용 가상호스트를 생성하고 ``ByClient`` 기능을 활성화한다. ::
    
       # vhosts.xml - <Vhosts>
 
@@ -159,7 +159,7 @@
        </Vhost>
 
 
--  ``M2/STON`` 혼합 콘텐츠 리소스는 ``www.example.com/item-detail/mixed/..`` 로 제공된다.
+-  ``M2`` 혼합 콘텐츠 리소스는 ``www.example.com/item-detail/mixed/..`` 로 제공된다.
    해당 URL이 ``mixed.example.com`` 에서 처리될 수 있도록 URL 전처리를 규칙을 추가한다. ::
 
       <URLRewrite AccessLog="Replace">
