@@ -8,7 +8,7 @@ Contents Service Patterns
 :저자: WineSOFT 아키텍트팀
 
 
-``M2`` 파이프라인 플랫폼을 이용해 구현한 서비스 패턴에 대해 설명한다.
+``M2`` `파이프라인 플랫폼 <https://m2-kr.readthedocs.io/ko/latest/guide/intro.html>`_ 구축 사례를 통해 On the fly 유스케이스를 살펴본다.
 
 .. toctree::
    :maxdepth: 2
