@@ -27,13 +27,13 @@
 .. figure:: img/dgm007.png
    :align: center
 
-``STON`` 을 통해 원본 이미지를 원하는 형태로 실시간 가공하여 전달한다.
+``M2`` 를 통해 원본 이미지를 원하는 형태로 실시간 가공하여 전달한다.
 
 
 구현
 ------------------------------------
--  이미지 스토리지 앞에 이미지 변환서버 용도의 ``STON`` 을 배치한다.
--  ``STON`` 이미지툴 기능을 활성화한다. ::
+-  이미지 스토리지 앞에 이미지 변환서버 용도의 ``M2`` 를 배치한다.
+-  ``M2`` 이미지툴 기능을 활성화한다. ::
    
       # server.xml - <Server><VHostDefault><Options>
       # vhosts.xml - <Vhosts><Vhost><Options>
@@ -54,12 +54,12 @@
 
 주의점
 ------------------------------------
-``STON`` 최대 처리가능 이미지 용량(기본 10MB)을 넘거나 비정상 원본이라면 가공하지 않고 원본을 전송한다.
+``M2`` 최대 처리가능 이미지 용량(기본 10MB)을 넘거나 비정상 원본이라면 가공하지 않고 원본을 전송한다.
 
 
 기타
 ------------------------------------
-이미 사용중인 URL 패턴이 있다면 ``STON`` 커스터마이징 모듈을 통해 호환성을 확보한다.
+이미 사용중인 URL 패턴이 있다면 커스터마이징 모듈을 통해 호환성을 확보한다.
 
 
 
@@ -88,8 +88,8 @@
 
 구현
 ------------------------------------
--  이미지 스토리지 앞에 이미지 변환서버 용도의 ``STON`` 을 배치한다.
--  ``STON`` 이미지툴 기능을 활성화한다. (최대크기를 제한하지 않는다.) ::
+-  이미지 스토리지 앞에 ``M2`` 를 배치한다.
+-  ``M2`` 이미지툴 기능을 활성화한다. (최대크기를 제한하지 않는다.) ::
    
       # server.xml - <Server><VHostDefault><Options>
       # vhosts.xml - <Vhosts><Vhost><Options>
@@ -97,14 +97,14 @@
       <Dims Status="Active" Keyword="dims" MaxSourceSize="0" />
 
 
--  ``STON`` 이미지 포맷을 대상으로 URL 전처리 규칙을 추가한다. ::
+-  ``M2`` 이미지 포맷을 대상으로 URL 전처리 규칙을 추가한다. ::
 
       <URLRewrite>
          <Pattern>example.com/.*\.(jpg|png).*)</Pattern>
          <Replace>example.com/#1/dims/optimize</Replace>
       </URLRewrite>
 
--  이미지 스토리지 도메인을 ``STON`` 으로 위임한다. 
+-  이미지 스토리지 도메인을 ``M2`` 로 위임한다. 
 
 
 장점/효과
@@ -154,8 +154,8 @@
 
 구현
 ------------------------------------
--  이미지 스토리지 앞에 이미지 변환서버 용도의 ``STON`` 을 배치한다.
--  ``STON`` 이미지툴 `원본이미지 조건판단 <https://ston.readthedocs.io/ko/latest/admin/image.html#media-dims-byoriginal>`_ 을 설정한다. (최대 가로 1200px) ::
+-  이미지 스토리지 앞에 이미지 변환서버 용도의 ``M2`` 을 배치한다.
+-  ``M2`` 이미지툴 `원본이미지 조건판단 <https://ston.readthedocs.io/ko/latest/admin/image.html#media-dims-byoriginal>`_ 을 설정한다. (최대 가로 1200px) ::
    
       # server.xml - <Server><VHostDefault><Options>
       # vhosts.xml - <Vhosts><Vhost><Options>
@@ -168,7 +168,7 @@
       </Dims>
 
 
--  ``STON`` 다음과 같이 URL을 노출한다. ::
+-  ``M2`` 다음과 같이 URL을 노출한다. ::
 
        http://image.example.com/koala.jpg/dims/byoriginal/limit-1200
 
@@ -242,7 +242,7 @@
       </html>
 
 
--  ``M2/STON`` 이미지처리용 가상호스트를 생성하고 이미지툴 기능을 활성화한다. ::
+-  ``M2`` 이미지처리용 가상호스트를 생성하고 이미지툴 기능을 활성화한다. ::
    
       # vhosts.xml - <Vhosts>
 
@@ -253,7 +253,7 @@
       </Vhost>
 
 
--  ``M2/STON`` 이미지처리 경로 ``/m2/image/`` 가 ``image.example.com`` 을 찾아갈 수 있도록 `URL 전처리 <https://ston.readthedocs.io/ko/latest/admin/adv_vhost.html#url>`_ 를 구성한다. ::
+-  ``M2`` 이미지처리 경로 ``/m2/image/`` 가 ``image.example.com`` 을 찾아갈 수 있도록 `URL 전처리 <https://ston.readthedocs.io/ko/latest/admin/adv_vhost.html#url>`_ 를 구성한다. ::
    
       # vhosts.xml
 

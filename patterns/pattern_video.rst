@@ -20,7 +20,7 @@
 
 솔루션/패턴 설명
 ------------------------------------
-``STON`` 의 `MP4HLS <https://ston.readthedocs.io/ko/latest/admin/video.html#mp4-hls>`_ 기능을 이용해 실시간으로 MP4영상을 HLS로 가공하여 전송한다.
+``M2`` 의 `MP4HLS <https://ston.readthedocs.io/ko/latest/admin/video.html#mp4-hls>`_ 기능을 이용해 실시간으로 MP4영상을 HLS로 가공하여 전송한다.
 
 .. figure:: img/dgm011.png
    :align: center
@@ -28,8 +28,8 @@
 
 구현
 ------------------------------------
--  동영상 스토리지/서비스 앞에 ``STON`` 을 배치한다.
--  ``STON`` MP4HLS 기능을 활성화한다. ::
+-  동영상 스토리지/서비스 앞에 ``M2`` 를 배치한다.
+-  MP4HLS 기능을 활성화한다. ::
    
       # vhosts.xml - <Vhosts><Vhost><Media>
 
@@ -58,7 +58,7 @@
 
 기타
 ------------------------------------
-사용자가 동영상 전체를 시청하는 빈도가 낮다면 ``STON``  - `Range요청 <https://ston.readthedocs.io/ko/latest/admin/origin.html#range>`_ 기능을 이용해 스토리지/원본서버의 대역폭 소비를 최소화한다.
+사용자가 동영상 전체를 시청하는 빈도가 낮다면 `Range요청 <https://ston.readthedocs.io/ko/latest/admin/origin.html#range>`_ 기능을 이용해 스토리지/원본서버의 대역폭 소비를 최소화한다.
 
 
 
@@ -73,7 +73,7 @@
 
 솔루션/패턴 설명
 ------------------------------------
-``STON`` 의 `Multi-Trimming <https://ston.readthedocs.io/ko/latest/admin/video.html#multi-trimming>`_ 기능을 이용해 실시간으로 MP4영상을 편집한다.
+`Multi-Trimming <https://ston.readthedocs.io/ko/latest/admin/video.html#multi-trimming>`_ 기능을 이용해 실시간으로 MP4영상을 편집한다.
 
 .. figure:: img/dgm012.png
    :align: center
@@ -81,8 +81,8 @@
 
 구현
 ------------------------------------
--  동영상 스토리지/서비스 앞에 ``STON`` 을 배치한다.
--  ``STON`` `Multi-Trimming <https://ston.readthedocs.io/ko/latest/admin/video.html#multi-trimming>`_ 기능을 활성화한다. ::
+-  동영상 스토리지/서비스 앞에 ``M2`` 를 배치한다.
+-  `Multi-Trimming <https://ston.readthedocs.io/ko/latest/admin/video.html#multi-trimming>`_ 기능을 활성화한다. ::
    
       # server.xml - <Server><VHostDefault><Media>
       # vhosts.xml - <Vhosts><Vhost><Media>
@@ -103,7 +103,7 @@
 
 주의점
 ------------------------------------
-`ngx_http_mp4_module <http://nginx.org/en/docs/http/ngx_http_mp4_module.html>`_ 이나 `Mod-H264-Streaming-Testing-Version2 <http://h264.code-shop.com/trac/wiki/Mod-H264-Streaming-Testing-Version2>`_ 같은 사용방식을 원한다면 ``STON`` - `Trimming <https://ston.readthedocs.io/ko/latest/admin/video.html#trimming>`_ 을 사용한다.
+`ngx_http_mp4_module <http://nginx.org/en/docs/http/ngx_http_mp4_module.html>`_ 이나 `Mod-H264-Streaming-Testing-Version2 <http://h264.code-shop.com/trac/wiki/Mod-H264-Streaming-Testing-Version2>`_ 같은 사용방식을 원한다면 `Trimming <https://ston.readthedocs.io/ko/latest/admin/video.html#trimming>`_ 을 사용한다.
 
 
 기타

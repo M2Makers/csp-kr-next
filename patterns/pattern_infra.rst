@@ -21,7 +21,7 @@
 
 솔루션/패턴 설명
 ------------------------------------
-``STON`` 의 `가상호스트 링크 <https://ston.readthedocs.io/ko/latest/admin/adv_vhost.html#adv-vhost-link>`_ 기능을 이용해 물리적으로 분리된 엔드포인트를 연결한다.
+``M2`` 의 `가상호스트 링크 <https://ston.readthedocs.io/ko/latest/admin/adv_vhost.html#adv-vhost-link>`_ 기능을 이용해 물리적으로 분리된 엔드포인트를 연결한다.
 
 .. figure:: img/dgm008.png
    :align: center
@@ -29,8 +29,8 @@
 
 구현
 ------------------------------------
--  메인 스토리지/서비스 앞에 ``STON`` 을 배치한다.
--  ``STON`` 개별 가상호스트를 생성하고 가상호스트 링크이미지툴 기능을 활성화한다. ::
+-  메인 스토리지/서비스 앞에 ``M2`` 를 배치한다.
+-  개별 가상호스트를 생성하고 가상호스트 링크이미지툴 기능을 활성화한다. ::
    
       # vhosts.xml - <Vhosts>
 
@@ -195,7 +195,7 @@
 
 주의점
 ------------------------------------
-``STON`` 으로 구현한다면 `블럭캐싱과 데이터 무결성 <https://ston.readthedocs.io/ko/latest/admin/enterprise.html#enterprise-block>`_ 를 참고한다.
+`블럭캐싱과 데이터 무결성 <https://ston.readthedocs.io/ko/latest/admin/enterprise.html#enterprise-block>`_ 를 참고한다.
 
 
 기타

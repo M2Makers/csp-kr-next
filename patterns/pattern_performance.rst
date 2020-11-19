@@ -29,15 +29,15 @@ TTL(Time To Live)을 0으로 설정하면 원본서버의 1트랜잭션 시간�
 .. figure:: img/dgm017.png
    :align: center
 
-``STON`` 은 최초의 요청만 원본서버로 보낸다. 
+``M2`` 는 최초의 요청만 원본서버로 보낸다. 
 응답은 대기 중인 모든 클라이언트에게 공유됨과 동시에 만료된다. (=유효하지 않다.)
 이 과정의 반복을 통해 접속자 수와 무관하게 원본부하를 고정시킨다.
 
 
 구현
 ------------------------------------
--  웹서버 앞에 ``STON`` 을 배치한다. (=HTTP 통신이 가능하다.)
--  ``STON`` 모든 콘텐츠를 캐싱하고 TTL을 0으로 설정한다. ::
+-  웹서버 앞에 ``M2`` 를 배치한다. (=HTTP 통신이 가능하다.)
+-  모든 콘텐츠를 캐싱하고 TTL을 0으로 설정한다. ::
    
       # server.xml - <Server><VHostDefault><Options>
       # vhosts.xml - <Vhosts><Vhost><Options>
@@ -59,7 +59,7 @@ TTL(Time To Live)을 0으로 설정하면 원본서버의 1트랜잭션 시간�
 주의점
 ------------------------------------
 -  읽기에는 적합하나 쓰기에는 사용할 수 없다.
--  ``STON`` 휘발성이 높은 콘텐츠에 대해서는 `Memory-Only 모드 <https://ston.readthedocs.io/ko/latest/admin/adv_topics.html#memory-only>`_ 를 권장한다.
+-  휘발성이 높은 콘텐츠에 대해서는 `Memory-Only 모드 <https://ston.readthedocs.io/ko/latest/admin/adv_topics.html#memory-only>`_ 를 권장한다.
 
 
 기타

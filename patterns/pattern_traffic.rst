@@ -29,8 +29,8 @@
 
 구현
 ------------------------------------
--  보호하고 싶은 서비스 앞에 ``STON`` 을 배치한다. (=HTTP 통신이 가능하다.)
--  ``STON`` 서비스(=가상호스트)별로 적절한 TTL을 설정한다. ::
+-  보호하고 싶은 서비스 앞에 ``M2`` 를 배치한다. (=HTTP 통신이 가능하다.)
+-  서비스(=가상호스트)별로 적절한 TTL을 설정한다. ::
    
       # server.xml - <Server><VHostDefault><Options>
       # vhosts.xml - <Vhosts><Vhost><Options>
@@ -43,7 +43,7 @@
           <Res5xx>5</Res5xx>
       </TTL>
 
--  ``STON`` 장애 상황에서 원본 오동작으로 ``4xx`` , ``5xx`` 응답이 올 수 있다. 
+-  장애 상황에서 원본 오동작으로 ``4xx`` , ``5xx`` 응답이 올 수 있다. 
    콘텐츠가 캐시에서 사라지지 않도록 `비정상 TTL연장 <https://ston.readthedocs.io/ko/latest/admin/caching_policy.html#id4>`_ 기능을 활성화시킨다. ::
 
       # server.xml - <Server><VHostDefault><Options>
@@ -55,7 +55,7 @@
 
 .. note::
 
-   ``STON`` 은 콘텐츠 갱신시점에 원본서버와 연결이 안되거나 전송지연이 발생할 경우 자동으로 TTL을 연장한다.
+   ``M2`` 는 콘텐츠 갱신시점에 원본서버와 연결이 안되거나 전송지연이 발생할 경우 자동으로 TTL을 연장한다.
 
 
 장점/효과
@@ -88,7 +88,7 @@
 
 솔루션/패턴 설명
 ------------------------------------
-``STON`` 은 동일한 1,000건의 요청에 대해 최초 1번만 압축하고 TTL 시간동안은 압축된 결과물을 전송한다.
+``M2`` 는 동일한 1,000건의 요청에 대해 최초 1번만 압축하고 TTL 시간동안은 압축된 결과물을 전송한다.
 
 .. figure:: img/dgm014.png
    :align: center
@@ -96,15 +96,15 @@
 
 구현
 ------------------------------------
--  서비스 앞에 ``STON`` 을 배치한다. (=HTTP 통신이 가능하다.)
--  ``STON`` 압축기능을 활성화한다. ::
+-  서비스 앞에 ``M2`` 를 배치한다. (=HTTP 통신이 가능하다.)
+-  압축기능을 활성화한다. ::
    
       # server.xml - <Server><VHostDefault><Options>
       # vhosts.xml - <Vhosts><Vhost><Options>
 
       <Compression Method="gzip" Level="6" SourceSize="2-2048">ON</Compression>
 
--  ``STON`` 압축대상을 지정한다. ::
+-  압축대상을 지정한다. ::
 
       # /svc/www.example.com/compression.txt
       # 구분자는 콤마( , ) 이다.
