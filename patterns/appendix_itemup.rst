@@ -6,7 +6,7 @@ Appendix B: 상품기술서 고도화
 E-Commerce 서비스의 성장에 따라 취급하는 상품(=상품기술서)도 증가한다.
 상품기술서(이하 기술서)의 복잡도를 공식으로 표현하면 다음과 같다. :: 
 
-   복잡도 = 유입경로 X 양 X 시간
+   복잡도 = 유입경로 X 양 X 시간 X 리소스 개수
 
 
 기술적으로 상품기술서는 웹페이지 안의 웹페이지이다.
@@ -15,7 +15,8 @@ E-Commerce 서비스의 성장에 따라 취급하는 상품(=상품기술서)�
    :align: center
 
 
-이 장에서는 상품기술서 서비스에서 발생하는 구체적인 문제를 약간만 설명한다.
+``M2`` 가 처리한 상품기술서 이슈 사례를 일부 소개한다.
+
 
 
 페이지 레이아웃
@@ -25,25 +26,25 @@ E-Commerce 서비스의 성장에 따라 취급하는 상품(=상품기술서)�
 
    - 사이트 개편과 오래된 상품기술서
    - 외부 상품의 대량유입
-   - Shop in Shop (or iframe)
+   - Shop in Shop / ``<iframe>``
    - 마이그레이션 과정 중의 버그
    - 하드코딩된 ``width=1920``
 
-``M2/Document Engine`` 은 이 문제를 우아하게 on the fly로 처리한다.
+``M2 - Document Engine`` 은 on the fly로 상품기술서를 적응시킨다.
 
 
-해상도 대응문제
+고정 해상도
 ------------------------------------
 
 -  고정 ``width`` 로 인해 가시영역을 넘어간다.
 
-   .. figure:: img/item02.png
+   .. figure:: img/item03.png
       :align: center
 
 
 -  상품기술서 내의 이미지들의 가로폭이 불규칙하다.
 
-   .. figure:: img/item03.png
+   .. figure:: img/item02.png
       :align: center
 
 
@@ -76,7 +77,7 @@ DOM overflow
 
 아래 상품기술서를 로딩하면 브라우저에서 메모리 문제가 발생할 수 있다.
 
-.. figure:: img/item07.png
+.. figure:: img/item09.png
    :align: center
 
 
@@ -105,7 +106,7 @@ DOM overflow
 
 ``height`` 1만 pixel이 넘는 이미지가 버젓이 서비스되고 있다. 
 
-.. figure:: img/item10.png
+.. figure:: img/item11.png
    :align: center
 
 
@@ -132,7 +133,7 @@ DOM overflow
 
 혼합 콘텐츠 문제가 발생하면 상품기술서는 노출되지 않는다.
 
-.. figure:: img/rsc013.png
+.. figure:: img/item13.png
    :align: center
 
 :ref:`pattern-webpage-mixed-contents`_ 패턴을 적용한다.
@@ -153,7 +154,7 @@ deprecated, obsolete 대응
 -  `Deprecated HTML Tags <https://www.w3docs.com/learn-html/deprecated-html-tags.html>`_
 
 
-``M2`` 는 상품기술서 분석을 통해 ``deprecated`` , ``obsolete`` 요소를 제거할 수 있다.
+``M2`` 는 상품기술서 분석을 통해 위험 요소를 제거할 수 있다.
 
 
 404 Not Found
