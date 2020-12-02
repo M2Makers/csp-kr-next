@@ -84,7 +84,7 @@
    :align: center
 
 
-
+.. _pattern-webpage-mixed-contents:
 
 혼합 콘텐츠 (Mixed Contents)
 ====================================
