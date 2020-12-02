@@ -54,7 +54,7 @@ E-Commerce 서비스의 성장에 따라 취급하는 상품(=상품기술서)�
       :align: center
 
 
-:ref:`pattern-webpage-responsive`_ 를 적용한다.
+:ref:`pattern-webpage-responsive` 를 적용한다.
 
 
 깨진 태그
@@ -97,7 +97,7 @@ DOM overflow
    :align: center
 
 
-:ref:`pattern-image-tool-external`_ 을 통해 용량과 속도를 통제할 수 있다.
+:ref:`pattern-image-tool-external` 을 통해 용량과 속도를 통제할 수 있다.
 
 
 
@@ -110,7 +110,7 @@ DOM overflow
    :align: center
 
 
-:ref:`pattern-image-split-loading`_ 과 브라우저 병렬로딩을 통해 로딩속도를 개선한다.
+:ref:`pattern-image-split-loading` 과 브라우저 병렬로딩을 통해 로딩속도를 개선한다.
 
 
 
@@ -136,7 +136,7 @@ DOM overflow
 .. figure:: img/item13.png
    :align: center
 
-:ref:`pattern-webpage-mixed-contents`_ 패턴을 적용한다.
+:ref:`pattern-webpage-mixed-contents` 패턴을 적용한다.
 
 
 .. note::
@@ -190,7 +190,7 @@ deprecated, obsolete 대응
 가시영역 로딩가속
 ------------------------------------
 
-`더 보기`_ 기능에 의해 먼저 노출되는 이미지 영역만을 :ref:`pattern-image-split-loading`_ 패턴으로 잘라내어 빠르게 노출시킨다.
+`더 보기`_ 기능에 의해 먼저 노출되는 이미지 영역만을 :ref:`pattern-image-split-loading` 패턴으로 잘라내어 빠르게 노출시킨다.
 
 .. figure:: img/item16.png
    :align: center
