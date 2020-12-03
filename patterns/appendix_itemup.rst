@@ -153,7 +153,7 @@ E-Commerce 서비스의 성장에 따라 취급하는 상품(=상품기술서)�
 .. figure:: img/item17.png
    :align: center
 
-인증서가 교체되기 전까지 SSl/TLS Onloading을 통해 대응한다.
+인증서가 교체되기 전까지 SSL/TLS Onloading을 통해 대응한다.
 
 
 
