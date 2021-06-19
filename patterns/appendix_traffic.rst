@@ -100,20 +100,13 @@ Insecure 이미지 트래픽 전략
    :align: center
 
 
-1. 안전한 트래픽은 그대로 둔다.
-   
-   ``https`` 프로토콜을 사용하거나 ``http`` 로 명시되었지만 ``https`` 를 지원하는 URL은 굳이 Proxying하지 않는다.
-   정확한 판단을 위해 M2는 `SVL(SSL/TLS Validation List) <https://m2-kr.readthedocs.io/ko/latest/guide/prditem.html#mixed-contents-svl>`_ 를 제공한다.
+1. 안전한 트래픽은 그대로 둔다. ``https`` 프로토콜을 사용하거나 ``http`` 로 명시되었지만 ``https`` 를 지원하는 URL은 굳이 Proxying하지 않는다. 정확한 판단을 위해 M2는 `SVL(SSL/TLS Validation List) <https://m2-kr.readthedocs.io/ko/latest/guide/prditem.html#mixed-contents-svl>`_ 를 제공한다.
 
 
-2. Proxying되는 이미지에는 명확한 Cache-Control을 부여하여 유효시간을 통제한다.
-   대부분의 CDN(Contents Delivery Networks)는 Cache-Control을 준수한다.
+2. Proxying되는 이미지에는 명확한 Cache-Control을 부여하여 유효시간을 통제한다. 대부분의 CDN(Contents Delivery Networks)는 Cache-Control을 준수한다.
 
 
-3. Proxying되는 이미지는 용량을 최적화한다.
-
-   과도하게 큰 용량의 이미지가 클라이언트에게 제공되지 않도록 :ref:`pattern-image-tool-external` 패턴을 적용한다. 
-   낮아진 용량의 이미지는 전송비용의 감소뿐만 아니라 로딩속도 개선효과를 가져온다.
+3. Proxying되는 이미지는 용량을 최적화한다. 과도하게 큰 용량의 이미지가 클라이언트에게 제공되지 않도록 :ref:`pattern-image-tool-external` 패턴을 적용한다. 낮아진 용량의 이미지는 전송비용의 감소뿐만 아니라 로딩속도 개선효과를 가져온다.
 
 
 상품기술서 엔진과 이미지 엔진이 동시에 필요한 경우 이 둘을 별도의 팜으로 나누어 운영하는 것을 추천한다.
