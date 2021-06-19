@@ -1,6 +1,6 @@
 ﻿.. _appendix-traffic:
 
-Appendix C: 이미지 트래픽과 패턴
+Appendix C: 이미지 트래픽 전략
 ******************
 
 서비스는 이를 구성하는 조직구조, 역량, 스타일에 따라 달라진다.
@@ -20,7 +20,7 @@ CDN 도입은 콘텐츠를 제공하는 도메인을 DNS 위임(DNS delegation)�
 .. figure:: img/rsc019.png
    :align: center
 
-   출처 - `Content Delivery Network Explained <https://www.globaldots.com/resources/blog/content-delivery-network-explained/>`
+   출처 - `Content Delivery Network Explained <https://www.globaldots.com/resources/blog/content-delivery-network-explained/>`_
 
 예를 들어 웹 서비스 주소가 ``www.example.com`` 이라면 이미지는 ``image.example.com`` 도메인으로 제공되는 형태이다.
 클라이언트가 ``image.example.com`` 질의하면 CDN 사의 전송서버(일반적으로 캐시서버)가 서비스를 담당하는 구조이다.
@@ -96,7 +96,7 @@ Insecure 이미지 트래픽 전략
 :ref:`pattern-webpage-mixed-contents` 문제는 지금껏 지불하지 않았던 트래픽 비용을 강제한다.
 트래픽을 세분화하여 처리하면 전송비용을 최소한으로 낮출 수 있다.
 
-.. figure:: img/00.png
+.. figure:: img/rsc022.png
    :align: center
 
 
