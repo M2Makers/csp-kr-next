@@ -208,7 +208,7 @@ SSL/TLS Offloading을 제공하는 CDN이 있다면 같이 활용할 수 있다.
 ------------------------------------
 전송시점에 원하는 웹페이지의 영역에 M2가 제공하는 핀치줌 기능을 삽입한다.
 
-.. figure:: img/dgm006.png
+.. figure:: img/dgm028.png
    :align: center
 
 
@@ -251,7 +251,7 @@ SSL/TLS Offloading을 제공하는 CDN이 있다면 같이 활용할 수 있다.
 
 주의점
 ------------------------------------
-`CSS Selector <https://www.w3schools.com/cssref/css_selectors.asp>`_ 영역을 지정할 수 없는 경우라면 최소한의 구조화가 필요하다.
+`CSS Selector <https://www.w3schools.com/cssref/css_selectors.asp>`_ 로 영역을 선택할 수 있어야 한다.
 
 
 기타
