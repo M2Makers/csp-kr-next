@@ -194,6 +194,72 @@ SSL/TLS Offloading을 제공하는 CDN이 있다면 같이 활용할 수 있다.
 
 
 
+.. _pattern-webpage-pinchzoom:
+
+핀치 줌 (Pinch Zoom)
+====================================
+
+해결하고 싶은 문제
+------------------------------------
+상품기술서, 상품공지등이 모바일 해상도에 최적화되지 않아 가독성이 떨어진다.
+
+
+솔루션/패턴 설명
+------------------------------------
+전송시점에 원하는 웹페이지의 영역에 M2가 제공하는 핀치줌 기능을 삽입한다.
+
+.. figure:: img/dgm006.png
+   :align: center
+
+
+구현
+------------------------------------
+-  ``M2`` 의 프론트엔드 모듈 ``m2fe.min.js`` 을 웹페이지에 삽입한다. ::
+   
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+         <script src="/your-path/m2fe.min.js"></script>
+      </head>
+
+
+-  핀치 줌을 적용하고 싶은 영역을 `CSS Selector <https://www.w3schools.com/cssref/css_selectors.asp>`_ 형식으로 아래 코드의 ``#m2-product-area`` 를 대체한다.  ::
+
+      <head>
+         <script src="/your-path/m2fe.min.js"></script>
+         <script>
+            window.M2OPTION = {
+               contentSelector: '#m2-product-area',
+               pinchzoom: {
+                  enable: true
+               }
+            };
+         </script>
+      </head>
+      <body>
+         <div id="m2-product-area">
+         ...
+      </body>
+
+
+장점/효과
+------------------------------------
+-  웹페이지를 일일이 수정하지 않고 핀치줌 기능을 추가한다.
+-  프론트엔드 스타일 충돌없이 도입이 가능하다.
+-  지속적으로 인터랙티브 요소를 추가할 수 있다.
+
+
+주의점
+------------------------------------
+`CSS Selector <https://www.w3schools.com/cssref/css_selectors.asp>`_ 영역을 지정할 수 없는 경우라면 최소한의 구조화가 필요하다.
+
+
+기타
+------------------------------------
+실시간 ``웹페이지 편집`` 기능을 이용하면 최소한의 코드 변경까지 제거가 가능하다.
+
+
+
 웹페이지 to Web API
 ====================================
 
